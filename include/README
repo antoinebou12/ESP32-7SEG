@@ -1,0 +1,36 @@
+
+This directory is intended for project header files.
+
+A header file is a file containing C declarations and macro definitions
+to be shared between several project source files. You request the use of a
+header file in your project source file (C, C++, etc) located in `src` folder
+by including it, with the C preprocessing directive `#include'.
+
+```src/main.c
+
+#include "header.h"
+
+int main (void)
+{
+ ...
+}
+
+```bash
+.
+├── include              # Contains header files (.h) with declarations
+│   ├── config.h         # Configuration for WiFi credentials, etc.
+│   ├── wifi_ble.h       # Declarations for WiFi and BLE functionality
+│   ├── display.h        # Declarations for display functionality
+│   └── web_server.h     # Declarations for web server setup and handling
+├── lib                  # Custom libraries or README if using external libraries
+│   └── README
+├── platformio.ini       # PlatformIO configuration file
+├── src                  # Source files (.cpp) with your code implementations
+│   ├── main.cpp         # Main application code
+│   ├── wifi_ble.cpp     # Implementation of WiFi and BLE functionalities
+│   ├── display.cpp      # Implementation of display functionalities
+│   └── web_server.cpp   # Implementation of web server functionalities
+└── test                 # Unit tests for your application
+    └── README
+
+```
