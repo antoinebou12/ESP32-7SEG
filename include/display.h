@@ -6,12 +6,19 @@
 #include <Adafruit_GFX.h>
 
 extern Adafruit_7segment matrix;
-extern TaskHandle_t CountdownTaskHandle;
+extern TaskHandle_t TimeTaskHandle;
+
+enum TimerMode { STOPPED, COUNTDOWN, STOPWATCH };
+
+extern unsigned long startTime;
+extern int setTimeSeconds;
 
 void startClockDisplay();
-void updateDisplay(int minutesLeft, int secondsLeft);
-void displayTime(unsigned long timeLeft);
-void startCountdownTask(void *pvParameters);
-void stopCountdown();
+void updateDisplay(int minutes, int seconds);
+void timeTask(void *pvParameters);
+void startTimeTask(TimerMode mode, int minutes, int seconds);
+void stopTimeTask();
+void incrementTimeTask();
+void decrementTimeTask();
 
 #endif

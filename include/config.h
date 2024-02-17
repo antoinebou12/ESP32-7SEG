@@ -2,7 +2,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-const char *ssid = "";
-const char *password = "";
+const char *ssidConfig = "";
+const char *passwordConfig = "";
 
 #endif

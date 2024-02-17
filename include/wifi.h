@@ -4,8 +4,22 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include <ESPmDNS.h>
+#include "nvs_flash.h"
+#include "nvs.h"
 
-void connectToWiFi();
-String scanNetworks();
+
+extern TaskHandle_t scanResultsTaskHandle;
+extern SemaphoreHandle_t scanResultsMutex;
+extern String scanResults;
+
+bool connectToWiFi(const char *ssid, const char *password);
+void scanNetworksTask(void *pvParameters);
+void startScanNetworksTask();
+void saveWiFiCredentials(const char *ssid, const char *password);
+bool loadWiFiCredentials(String &ssid, String &password);
+void resetWiFiCredentialsTask(void *pvParameters);
+void initiateResetWiFiCredentials();
+void setupWiFi();
 
 #endif
