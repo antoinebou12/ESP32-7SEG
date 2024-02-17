@@ -5,38 +5,51 @@ on:
     branches:
       - main
     tags:
-      - 'v*'
+      - 'v*'  # Adjust the tag pattern if necessary
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+      
     - name: Install PlatformIO
       run: pip install platformio
+      
     - name: Build Firmware
       run: pio run
+      
     - name: Archive Production Artifacts
-      uses: actions/upload-artifact@v4
+      run: |
+        zip -r firmware.zip .pio/build/*/firmware.bin
+        mv firmware.zip firmware/
+      working-directory: ${{ github.workspace }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
       with:
         name: firmware
-        path: |
-          .pio/build/*/firmware.bin
+        path: firmware/firmware.zip
+
   release:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
-    - uses: actions/download-artifact@v4
+    - name: Download Firmware Artifact
+      uses: actions/download-artifact@v2
       with:
         name: firmware
         path: firmware
-    - uses: softprops/action-gh-release@v1
+      
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
       with:
-        files: firmware/*.bin
+        files: firmware/firmware.zip
       env:
         GH_SECRET_TOKEN: ${{ secrets.GH_SECRET_TOKEN }}
