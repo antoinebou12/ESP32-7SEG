@@ -3,12 +3,12 @@
 ![Platform](https://img.shields.io/badge/platform-ESP32-blue.svg) ![Language](https://img.shields.io/badge/language-C%2B%2B-orange.svg)
 
 This repository houses a project that simplifies controlling a 7-segment display using an ESP32 FireBeetle board. The key feature of this project is its web-based interface, allowing users to update the display content over a local network.
-
+![interface control](images/interface2.png)
+![interface setup](images/setup.png)
 ## Features
 
 - **Direct Control Over 7-Segment Display**: Use the ESP32 FireBeetle board to control what is displayed, from digits to specific characters.
 - **Web Interface for Real-time Updates**: A built-in web server on the ESP32 lets you change the display content through any browser on your local network.
-- **Comprehensive Documentation**: Detailed setup and usage instructions ensure a smooth start, regardless of your experience level with hardware projects.
 
 ## Getting Started
 
