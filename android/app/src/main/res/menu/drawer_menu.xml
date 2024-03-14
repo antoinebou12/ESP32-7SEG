@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_main_activity"
+        android:title="@string/main_activity" />
+
+    <!-- Divider item -->
+    <item
+        android:id="@+id/nav_divider1"
+        android:title=""
+        android:icon="@drawable/divider"
+        android:enabled="false" />
+
+    <item
+        android:id="@+id/nav_timer_control"
+        android:title="@string/timer_control" />
+</menu>

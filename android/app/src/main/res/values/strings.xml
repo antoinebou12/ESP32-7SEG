@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ESPTimer</string>
+    <string name="timer_control">Timer Control</string>
+    <string name="main_activity">Main Activity</string>
+    <string name="enter_4_digit_number">Enter 4 digit number</string>
+    <string name="countdown">CountDown</string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="stopwatch">Stopwatch</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="_5_min">5 min</string>
+    <string name="_10_min">10 min</string>
+    <string name="reset_wifi">Reset WiFi</string>
+    <string name="_1_min">1 min</string>
+    <string name="connect_to_wifi">Connect to WiFi</string>
+    <string name="enter_wifi_password">Enter WiFi Password</string>
+    <string name="_3_connect_to_wifi">3. Connect to WiFi</string>
+    <string name="_2_enter_wifi_credentials">2. Enter WiFi credentials</string>
+    <string name="_1_connect_to_esptimer_wifi">1. Connect to ESPTimer WiFi</string>
+</resources>
