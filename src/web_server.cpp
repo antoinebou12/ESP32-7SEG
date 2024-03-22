@@ -222,14 +222,9 @@ void setupWebServer()
       // Update the display with the extracted minutes and seconds
       updateDisplay(minutes, seconds, []() {
           JsonDocument msgDoc;
-          if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-              msgDoc["type"] = "displayUpdated";
-              msgDoc["data"]["minutes"] = currentMinutes;
-              msgDoc["data"]["seconds"] = currentSeconds;
-              xSemaphoreGive(mutex);
-          } else {
-              Serial.println("Failed to take the mutex!");
-          }
+          msgDoc["type"] = "displayUpdated";
+          msgDoc["data"]["minutes"] = currentMinutes;
+          msgDoc["data"]["seconds"] = currentSeconds;
           String jsonString;
           serializeJson(msgDoc, jsonString);
           sendWebSocketMessage("displayUpdated", jsonString);
