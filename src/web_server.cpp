@@ -6,20 +6,6 @@
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
-
-void broadcastStatus() {
-    JsonDocument doc;
-
-    doc["type"] = "statusUpdate";
-    doc["mode"] = currentMode == STOPWATCH ? "stopwatch" : (currentMode == COUNTDOWN ? "countdown" : "stopped");
-    doc["timeElapsed"] = (millis() - startTime) / 1000;
-    doc["setTime"] = setTimeSeconds;
-
-    String message;
-    serializeJson(doc, message);
-    ws.textAll(message.c_str());
-}
-
 void sendWebSocketMessage(const String& action, const String& message) {
     JsonDocument doc;
     doc["action"] = action;
@@ -39,7 +25,14 @@ void handleTimerAction(AsyncWebServerRequest *request, String action, String mod
   {
     TimerMode timerMode = (mode == "stopwatch") ? STOPWATCH : COUNTDOWN;
     startTimeTask(timerMode, minutes, seconds, [](){
-          sendWebSocketMessage("timerStopped", "Timer stopped.");
+          JsonDocument msgDoc;
+          msgDoc["type"] = "timerStarted";
+          msgDoc["data"]["minutes"] = currentMinutes;
+          msgDoc["data"]["seconds"] = currentSeconds;
+          msgDoc["data"]["mode"] = currentMode == COUNTDOWN ? "countdown" : "stopwatch";
+          String jsonString;
+          serializeJson(msgDoc, jsonString);
+          sendWebSocketMessage("timerStarted", jsonString);
         },
         [](){
           JsonDocument msgDoc;
@@ -57,14 +50,22 @@ void handleTimerAction(AsyncWebServerRequest *request, String action, String mod
   {
     if(action == "stop") {
         stopTimeTask([]() {
-          sendWebSocketMessage("timerStopped", "Timer stopped.");
+          JsonDocument msgDoc;
+          msgDoc["type"] = "timerStopped";
+          String jsonString;
+          serializeJson(msgDoc, jsonString);
+          sendWebSocketMessage("timerStopped", jsonString);
         });
 
         doc["message"] = "Timer stopped.";
-        sendWebSocketMessage("timerStopped", "Timer stopped successfully.");
     } else if(action == "pause") {
         pauseTimeTask([]() {
-          sendWebSocketMessage("timerPaused", "Timer paused.");
+          msgDoc["type"] = "timerPause";
+          msgDoc["data"]["minutes"] = currentMinutes;
+          msgDoc["data"]["seconds"] = currentSeconds;
+          String jsonString;
+          serializeJson(msgDoc, jsonString);
+          sendWebSocketMessage("timerPause", jsonString);
         });
         doc["message"] = "Timer paused.";
     }
@@ -82,7 +83,6 @@ void handleTimerAction(AsyncWebServerRequest *request, String action, String mod
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
     if (type == WS_EVT_CONNECT) {
         Serial.println("WebSocket client connected");
-        broadcastStatus(); // Send current status when a client connects
     } else if (type == WS_EVT_DISCONNECT) {
         Serial.println("WebSocket client disconnected");
     } else if (type == WS_EVT_DATA) {
@@ -100,7 +100,6 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
                     int minutes = doc["minutes"];
                     int seconds = doc["seconds"];
                 } else if (action == "status") {
-                    broadcastStatus();
                 } else {
                     Serial.println("Invalid action");
                 }
@@ -225,6 +224,7 @@ void setupWebServer()
           msgDoc["type"] = "displayUpdated";
           msgDoc["data"]["minutes"] = currentMinutes;
           msgDoc["data"]["seconds"] = currentSeconds;
+
           String jsonString;
           serializeJson(msgDoc, jsonString);
           sendWebSocketMessage("displayUpdated", jsonString);

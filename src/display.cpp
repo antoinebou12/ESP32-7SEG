@@ -35,7 +35,6 @@ void startClockDisplay()
 
 void updateDisplay(int minutes, int seconds, DisplayCallback displayCallback = nullptr)
 {
-    Serial.println("Entered updateDisplay");
     // Adjust seconds and minutes if seconds are 60 or morew
     minutes += seconds / 60;
     seconds %= 60;
