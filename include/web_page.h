@@ -162,7 +162,11 @@ const char STA_HTML[] PROGMEM = R"rawliteral(
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         //particle.js
         <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <style>
+            canvas {
+                display: block;
+            }
             body, html {
                 height: 100%;
                 margin: 0;
@@ -354,9 +358,192 @@ const char STA_HTML[] PROGMEM = R"rawliteral(
                 "retina_detect": true
             }
             );
+
+            document.addEventListener('DOMContentLoaded', function() {
+                if ("Notification" in window) {
+                    Notification.requestPermission();
+                }
+            });
+
+            var ws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/ws');
+
+            ws.onmessage = function(event) {
+                var data = JSON.parse(event.data);
+                console.log('Message from server:', data);
+
+                if(data.type === "statusUpdate") {
+                    console.log("Timer mode:", data.mode);
+                    console.log("Time elapsed:", data.timeElapsed);
+                }
+            };
+            ws.onopen = function() {
+                console.log('WebSocket connection established');
+            };
+
+
+            ws.onclose = function() {
+                console.log('WebSocket connection closed');
+            };
+
+            ws.onerror = function(error) {
+                console.log('WebSocket Error:', error);
+            };
         </script>
     </body>
     </html>
+)rawliteral";
+
+
+const char DOCS_HTML[] PROGMEM = R"rawliteral(
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+<div class="container mx-auto my-8 max-w-full">
+    <h1 class="text-4xl font-bold text-center mb-8">API Documentation</h1>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Endpoints -->
+        <div class="card">
+            <h2 class="font-bold text-xl mb-2">Endpoints</h2>
+            <ul class="list-disc space-y-2 pl-5 text-gray-700">
+                <li>
+                    <strong>GET /reset-wifi</strong> - Resets the WiFi credentials and restarts the device.
+                    <br><a href="#" class="text-blue-500 hover:text-blue-600 dynamic-url" data-path="/reset-wifi">Dynamic URL</a>
+                </li>
+                <li>
+                    <strong>POST /connect</strong> - Connects to a specified WiFi network. Requires parameters: <code>ssid</code> and <code>password</code>.
+                    <br><span class="text-gray-600 dynamic-curl" data-path="/connect" data-command="post">Dynamic CURL</span>
+                </li>
+                <li>
+                    <strong>GET /scan</strong> - Scans for available WiFi networks and returns the results.
+                    <br><a href="#" class="text-blue-500 hover:text-blue-600 dynamic-url" data-path="/scan">Dynamic URL</a>
+                </li>
+                <li>
+                    <strong>POST /timer-action</strong> - Starts, stops, or pauses the timer with given parameters. Requires parameters: <code>action</code> (start, stop, pause), <code>mode</code> (stopwatch, countdown), <code>minutes</code>, and <code>seconds</code>.
+                    <br><span class="text-gray-600 dynamic-curl" data-path="/timer-action" data-command="post">Dynamic CURL</span>
+                </li>
+                <li>
+                    <strong>POST /update-display</strong> - Updates the display with the specified minutes and seconds. Requires parameters: <code>minutes</code> and <code>seconds</code>.
+                    <br><span class="text-gray-600 dynamic-curl" data-path="/update-display" data-command="post">Dynamic CURL</span>
+                </li>
+                <li>
+                    <strong>GET /device-info</strong> - Returns information about the device.
+                    <br><a href="#" class="text-blue-500 hover:text-blue-600 dynamic-url" data-path="/device-info">Dynamic URL</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- WebSocket Messages -->
+        <div class="card lg:col-span-2">
+            <h2 class="font-bold text-xl mb-2">WebSocket Messages</h2>
+            <p>Live updates from the server will appear below:</p>
+            <div id="wsMessages" class="mt-2 p-2 bg-gray-100 rounded h-32 overflow-auto"></div>
+        </div>
+
+        <!-- Interactive Example -->
+        <div class="card lg:col-span-3">
+            <h2 class="font-bold text-xl mb-2">Interactive Example</h2>
+            <p>Use the form below to send a timer action command to the server:</p>
+            <form id="timerActionForm" class="space-y-4">
+                <input type="text" id="action" name="action" placeholder="Action (start, stop, pause)" class="w-full border p-2 rounded" required>
+                <input type="text" id="mode" name="mode" placeholder="Mode (stopwatch, countdown)" class="w-full border p-2 rounded" required>
+                <div class="flex gap-4">
+                    <input type="number" id="minutes" name="minutes" placeholder="Minutes" class="w-full border p-2 rounded" min="0" required>
+                    <input type="number" id="seconds" name="seconds" placeholder="Seconds" class="w-full border p-2 rounded" min="0" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Send Command</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentHostname = window.location.hostname;
+        var protocol = window.location.protocol;
+        var port = window.location.port ? ':' + window.location.port : '';
+        var baseUrl = protocol + '//' + currentHostname + port;
+
+        // Update URLs dynamically
+        document.querySelectorAll('.dynamic-url').forEach(function(element) {
+            var path = element.getAttribute('data-path');
+            element.href = baseUrl + path;
+            element.innerText = baseUrl + path;
+        });
+
+        document.querySelectorAll('.dynamic-curl').forEach(function(element) {
+            var path = element.getAttribute('data-path');
+            var command = element.getAttribute('data-command');
+            element.innerText = `curl -X ${command.toUpperCase()} ${baseUrl}${path} -d "ssid=YourSSID&password=YourPassword"`;
+        });
+
+        // Form submission handling
+        document.getElementById('timerActionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const action = document.getElementById('action').value;
+            const mode = document.getElementById('mode').value;
+            const minutes = document.getElementById('minutes').value;
+            const seconds = document.getElementById('seconds').value;
+
+            fetch('/timer-action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=${action}&mode=${mode}&minutes=${minutes}&seconds=${seconds}`
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+        });
+
+        // WebSocket connection
+        var ws = new WebSocket((protocol === 'https:' ? 'wss://' : 'ws://') + currentHostname + port + '/ws');
+
+        ws.onmessage = function(event) {
+            console.log('Message from server:', event.data);
+            try {
+                var messageObj = JSON.parse(event.data);
+                handleJsonMessage(messageObj);
+            } catch (error) {
+                handleRawMessage(event.data);
+            }
+        };
+    });
+
+    function handleJsonMessage(messageObj) {
+        var messagesDiv = document.getElementById('wsMessages');
+        var messageElement = document.createElement('p');
+        messageElement.textContent = `[${messageObj.action}] ${messageObj.message}`;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function handleRawMessage(rawMessage) {
+        var messagesDiv = document.getElementById('wsMessages');
+        var messageElement = document.createElement('p');
+        messageElement.textContent = `Raw Message: ${rawMessage}`;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+</script>
+</body>
+</html>
+
 )rawliteral";
 
 #endif

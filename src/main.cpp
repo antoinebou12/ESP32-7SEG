@@ -19,15 +19,15 @@ void setup() {
     if (loadWiFiCredentials(ssid, password)) {
         if (!connectToWiFi(ssid.c_str(), password.c_str())) {
             Serial.println("Failed to connect with saved credentials. Switching to AP mode.");
-            setupWiFi(); // Setup as AP if connection fails
+            setupWiFi();
         }
     } else {
         Serial.println("No stored WiFi credentials found. Setting up as AP.");
-        setupWiFi(); // Setup as AP if no credentials found
+        setupWiFi();
     }
 
-    setupWebServer(); // Initialize web server
-    startClockDisplay(); // Initialize display
+    startClockDisplay();
+    setupWebServer();
 }
 
 void loop() {

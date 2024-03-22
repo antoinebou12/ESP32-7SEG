@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
+#include <ArduinoJson.h>
 #include "nvs_flash.h"
 #include "nvs.h"
 
