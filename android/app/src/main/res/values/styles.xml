@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorError">@color/design_default_color_error</item>
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary_dark</item>
+        <item name="colorSecondary">@color/design_default_color_secondary</item>
+        <item name="colorOnPrimary">@color/design_default_color_on_primary</item>
+        <item name="colorOnSecondary">@color/design_default_color_on_secondary</item>
+    </style>
+</resources>

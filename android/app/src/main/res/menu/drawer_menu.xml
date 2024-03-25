@@ -1,16 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_main_activity"
-        android:title="@string/main_activity" />
-
-    <!-- Divider item -->
-    <item
-        android:id="@+id/nav_divider1"
-        android:title=""
-        android:icon="@drawable/divider"
-        android:enabled="false" />
-
-    <item
-        android:id="@+id/nav_timer_control"
-        android:title="@string/timer_control" />
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/wifiConnectFragment"
+            android:icon="@drawable/ic_wifi"
+            android:title="@string/wi_fi_connect" />
+        <item
+            android:id="@+id/timerControlFragment"
+            android:icon="@drawable/baseline_timer_24"
+            android:title="@string/timer_control" />
+    </group>
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/webBrowserFragment"
+            android:icon="@drawable/ic_web"
+            android:title="@string/web_browser" />
+        <item
+            android:id="@+id/settingsFragment"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+    </group>
 </menu>

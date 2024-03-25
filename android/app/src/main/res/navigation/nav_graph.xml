@@ -1,0 +1,32 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/wifiConnectFragment">
+
+    <fragment
+        android:id="@+id/wifiConnectFragment"
+        android:name="com.esptimer.fragment.WiFiConnectFragment"
+        android:label="@string/wi_fi_connect"
+        tools:layout="@layout/fragment_wifi_connect" />
+
+    <fragment
+        android:id="@+id/timerControlFragment"
+        android:name="com.esptimer.fragment.TimerControlFragment"
+        android:label="@string/timer_control"
+        tools:layout="@layout/fragment_timer_control" />
+
+    <fragment
+        android:id="@+id/webBrowserFragment"
+        android:name="com.esptimer.fragment.WebBrowserFragment"
+        android:label="Web Browser"
+        tools:layout="@layout/fragment_web_browser" />
+
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.esptimer.fragment.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>
